@@ -51,7 +51,7 @@ public class Settings {
 	
 	public static String convertEncoding(String string) {
 		try {
-			byte[] bytes = string.getBytes(currentEncoding);
+			byte[] bytes = string.getBytes();
 			string = new String(bytes, currentEncoding);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -61,7 +61,8 @@ public class Settings {
 	
 	public static byte[] getBytesFromCurrentEncoding(String string) {
 		try {
-			return string.getBytes(currentEncoding);
+			byte[] bytes = string.getBytes(currentEncoding);
+			return bytes;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

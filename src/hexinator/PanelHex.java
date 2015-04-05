@@ -57,6 +57,9 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 				sb.append(addressDelimiter);
 			}
 			String s = String.format("%h", b);
+			while (s.length() > 2) {
+					s = s.replaceAll("^.", "");
+			}
 			if (s.length() == 1) {
 				sb.append("0");
 			}
