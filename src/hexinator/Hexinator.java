@@ -8,13 +8,14 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 /**
  * @author ericalanbischoff
@@ -26,13 +27,14 @@ public class Hexinator extends JFrame {
 	
 	protected PanelToolbar toolbar = new PanelToolbar();
 	protected PanelStatusBar statusBar = new PanelStatusBar();
-	protected PanelUnicode unicode = new PanelUnicode();
-	protected JPanel unicodeNoWrapPanel = new JPanel(new BorderLayout());
+	protected PanelText textPanel = new PanelText();
+	protected JPanel texNoWrapPanel = new JPanel(new BorderLayout());
 	protected JSplitPane splitPane;
-	protected JScrollPane unicodeScroll;
-	protected PanelHex hex = new PanelHex();
+	protected JScrollPane textScroll;
+	protected PanelHex hexPanel = new PanelHex(textPanel);
 	protected JScrollPane hexScroll;
-	protected Dimension minimumSize = new Dimension(1080,720);
+	protected Dimension minimumSize = new Dimension(320,240);
+	protected Dimension preferredSize = new Dimension(1080, 720);
 	
 	private Container body = this.getContentPane();
 
@@ -40,62 +42,64 @@ public class Hexinator extends JFrame {
 	 * @throws HeadlessException
 	 */
 	public Hexinator() {
+		Settings.loadStaticClass();
 		initGUI();
 	}
 
-
 	private void initGUI() {
-		
 		BorderLayout layout = new BorderLayout();
 		body.setLayout(layout);
 		this.setTitle("Hexinator");
 		this.setMinimumSize(minimumSize);
-		this.setPreferredSize(minimumSize);
+		this.setPreferredSize(preferredSize);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		populateGUI();
 		finalizeGUI();
 	}
 
 	private void populateGUI() {
-		//Common
 		toolbar.setPreferredSize(new Dimension(640, 40));
+		
 		statusBar.setPreferredSize(new Dimension(640, 24));
-		unicode.setText("");
-		unicode.setFont(new Font("Courier New", Font.PLAIN, 14));
-		unicode.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				changed(e);
-			}
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				changed(e);
-			}
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				changed(e);
-			}
-			private void changed(DocumentEvent e) {
-				String text = unicode.getText();
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < text.length(); i++) {
-					char c = text.charAt(i);
-					sb.append(String.format("%H ", c));
-				}
-				hex.setText(sb.toString());
-			}
-		});
-		hex.setMinimumSize(new Dimension(200, 400));
-		hex.setFont(new Font("Courier New", Font.PLAIN, 14));
-		body.add(toolbar, BorderLayout.PAGE_START);
-		unicodeNoWrapPanel.add(unicode);
-		unicodeScroll = new JScrollPane(unicodeNoWrapPanel);
-		hexScroll = new JScrollPane(hex);
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, unicodeScroll, hexScroll);
+		
+		textPanel.setText("");
+		textPanel.setFont(new Font("Courier New", Font.PLAIN, 14));
+		textPanel.getDocument().addDocumentListener(hexPanel);
+		
+		hexPanel.setMinimumSize(new Dimension(200, 400));
+		hexPanel.setFont(new Font("Courier New", Font.PLAIN, 14));
+		
+		texNoWrapPanel.add(textPanel);
+		textScroll = new JScrollPane(texNoWrapPanel);
+		hexScroll = new JScrollPane(hexPanel);
+		
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, textScroll, hexScroll);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setMinimumSize(new Dimension(640, 100));
-		splitPane.setDividerLocation(this.getWidth()/2);
+		splitPane.setDividerLocation(0.5);
 		splitPane.setResizeWeight(0.5);
+		
+		JComboBox<String> encodingCombo = new JComboBox<String>();
+		String[] encodings = Settings.getSupportedEncodings();
+		for (String encoding : encodings) {
+			encodingCombo.addItem(encoding);
+		}
+		encodingCombo.setSelectedItem(Settings.getCurrentEncoding());
+		encodingCombo.setBounds(10, 10, 200, 24);
+		encodingCombo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unchecked")
+				JComboBox<String> combo = (JComboBox<String>)e.getSource();
+				String encoding = (String)combo.getSelectedItem();
+				System.out.println(encoding);
+				Settings.setCurrentEncoding(encoding);
+				hexPanel.refreshText();
+			}
+		});
+		
+		toolbar.add(encodingCombo);
+		body.add(toolbar, BorderLayout.PAGE_START);
 		body.add(splitPane, BorderLayout.CENTER);
 		body.add(statusBar, BorderLayout.PAGE_END);
 	}
