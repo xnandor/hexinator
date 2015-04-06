@@ -7,51 +7,39 @@ import java.util.SortedMap;
 
 public class Settings {
 
-	private static final String ENCODING_ASCII   = "US-ASCII";
-	private static final String ENCODING_UTF16   = "UTF-16";
-	private static final String ENCODING_UTF16BE   = "UTF-16BE";
-	private static final String ENCODING_UTF16LE = "UTF-16LE";
-	private static final String ENCODING_UTF32   = "UTF-32";
-	private static final String ENCODING_UTF32BE = "UTF-32BE";
-	private static final String ENCODING_UTF32LE = "UTF-32LE";
-	private static final String ENCODING_UTF8    = "UTF-8";
+	public enum Encoding {
+		ENCODING_ASCII   ("US-ASCII"),
+		ENCODING_UTF8    ("UTF-8"),
+		ENCODING_UTF16   ("UTF-16"),
+		ENCODING_UTF16BE ("UTF-16BE"),
+		ENCODING_UTF16LE ("UTF-16LE"),
+		ENCODING_UTF32   ("UTF-32"),
+		ENCODING_UTF32BE ("UTF-32BE"),
+		ENCODING_UTF32LE ("UTF-32LE");
+		public final String encodingName;
+		private Encoding(String name) {
+			this.encodingName = name;
+		}
+		
+	}
 	public static final String[] encodings;
-	private static String currentEncoding = "US-ASCII";
+	private static String currentEncoding = Encoding.ENCODING_UTF8.encodingName;
 	
 	static {
 		SortedMap<String, Charset> map = Charset.availableCharsets();
 		ArrayList<String> a = new ArrayList<String>();
-		if (map.containsKey(ENCODING_ASCII)) {
-			a.add(ENCODING_ASCII);
-		}
-		if (map.containsKey(ENCODING_UTF8)) {
-			a.add(ENCODING_UTF8);
-		}
-		if (map.containsKey(ENCODING_UTF16)) {
-			a.add(ENCODING_UTF16);
-		}
-		if (map.containsKey(ENCODING_UTF16BE)) {
-			a.add(ENCODING_UTF16BE);
-		}
-		if (map.containsKey(ENCODING_UTF16LE)) {
-			a.add(ENCODING_UTF16LE);
-		}
-		if (map.containsKey(ENCODING_UTF32)) {
-			a.add(ENCODING_UTF32);
-		}
-		if (map.containsKey(ENCODING_UTF32BE)) {
-			a.add(ENCODING_UTF32BE);
-		}
-		if (map.containsKey(ENCODING_UTF32LE)) {
-			a.add(ENCODING_UTF32LE);
+		for (Encoding encoding : Encoding.values()) {
+			if (map.containsKey(encoding.encodingName)) {
+				a.add(encoding.encodingName);
+			}
 		}
 		encodings = a.toArray(new String[0]);
-		currentEncoding = "US-ASCII";
+		currentEncoding = Encoding.ENCODING_UTF8.encodingName;
 	}
 	
 	public static String convertEncoding(String string) {
 		try {
-			byte[] bytes = string.getBytes();
+			byte[] bytes = string.getBytes(currentEncoding);
 			string = new String(bytes, currentEncoding);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

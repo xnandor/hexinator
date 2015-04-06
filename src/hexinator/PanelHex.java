@@ -16,14 +16,14 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 
 	private static final long serialVersionUID = 4L;
 	
-	private JTextPane source;
-	private String text = "";
+	private PanelText source;
 	private int characterWidth = 0;
 	private int charactersPerLine = 0;
 	private String octetDelimiter = " ";
 	private String addressDelimiter = " | ";
+	private byte[] bytes;
 
-	public PanelHex(JTextPane pane) {
+	public PanelHex(PanelText pane) {
 		this.source = pane;
 		initGUI();
 	}
@@ -42,10 +42,9 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 	}
 	
 	public void refreshText() {
-		text = source.getText();
 		long address = 0L;
 		StringBuilder sb = new StringBuilder();
-		byte[] bytes = Settings.getBytesFromCurrentEncoding(text);
+		bytes = source.getBytes();
 		for (byte b : bytes) {
 			if ((address % 16) == 0) {
 				sb.append("\n0x");

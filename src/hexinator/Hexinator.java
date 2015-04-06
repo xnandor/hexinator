@@ -68,6 +68,7 @@ public class Hexinator extends JFrame {
 		
 		hexPanel.setMinimumSize(new Dimension(200, 400));
 		hexPanel.setFont(new Font("Courier New", Font.PLAIN, 14));
+		hexPanel.setText("");
 		
 		texNoWrapPanel.add(textPanel);
 		textScroll = new JScrollPane(texNoWrapPanel);
@@ -92,7 +93,6 @@ public class Hexinator extends JFrame {
 				@SuppressWarnings("unchecked")
 				JComboBox<String> combo = (JComboBox<String>)e.getSource();
 				String encoding = (String)combo.getSelectedItem();
-				System.out.println(encoding);
 				Settings.setCurrentEncoding(encoding);
 				hexPanel.refreshText();
 			}
