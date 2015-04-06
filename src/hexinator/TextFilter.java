@@ -1,13 +1,12 @@
 package hexinator;
 
-import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-public class EncodingFilter extends DocumentFilter {
+public class TextFilter extends DocumentFilter {
 
-	public EncodingFilter(JTextPane pane) {
+	public TextFilter() {
 
 	}
 	

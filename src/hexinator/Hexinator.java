@@ -8,10 +8,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -80,25 +77,9 @@ public class Hexinator extends JFrame {
 		splitPane.setDividerLocation(0.5);
 		splitPane.setResizeWeight(0.5);
 		
-		JComboBox<String> encodingCombo = new JComboBox<String>();
-		String[] encodings = Settings.getSupportedEncodings();
-		for (String encoding : encodings) {
-			encodingCombo.addItem(encoding);
-		}
-		encodingCombo.setSelectedItem(Settings.getCurrentEncoding());
-		encodingCombo.setBounds(10, 10, 200, 24);
-		encodingCombo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				@SuppressWarnings("unchecked")
-				JComboBox<String> combo = (JComboBox<String>)e.getSource();
-				String encoding = (String)combo.getSelectedItem();
-				Settings.setCurrentEncoding(encoding);
-				hexPanel.refreshText();
-			}
-		});
+		Settings.addSettingsListener(textPanel);
+		Settings.addSettingsListener(hexPanel);
 		
-		toolbar.add(encodingCombo);
 		body.add(toolbar, BorderLayout.PAGE_START);
 		body.add(splitPane, BorderLayout.CENTER);
 		body.add(statusBar, BorderLayout.PAGE_END);

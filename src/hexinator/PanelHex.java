@@ -12,7 +12,7 @@ import javax.swing.JTextPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class PanelHex extends JTextPane implements DocumentListener, HierarchyBoundsListener, PropertyChangeListener {
+public class PanelHex extends JTextPane implements DocumentListener, HierarchyBoundsListener, PropertyChangeListener, SettingsListener {
 
 	private static final long serialVersionUID = 4L;
 	
@@ -21,6 +21,7 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 	private int charactersPerLine = 0;
 	private String octetDelimiter = " ";
 	private String addressDelimiter = " | ";
+	private int bytesPerLine = 16;
 	private byte[] bytes;
 
 	public PanelHex(PanelText pane) {
@@ -46,10 +47,10 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 		StringBuilder sb = new StringBuilder();
 		bytes = source.getBytes();
 		for (byte b : bytes) {
-			if ((address % 16) == 0) {
+			if ((address % bytesPerLine) == 0) {
 				sb.append("\n0x");
 				String addressString = String.format("%H", address);
-				for (int i = 16 - addressString.length(); i > 0; i--) {
+				for (int i = bytesPerLine - addressString.length(); i > 0; i--) {
 					sb.append("0");
 				}
 				sb.append(addressString);
@@ -120,6 +121,11 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		refreshText();
+	}
+
+	@Override
+	public void settingsChanged() {
 		refreshText();
 	}	
 }
