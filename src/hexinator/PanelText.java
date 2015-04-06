@@ -1,5 +1,6 @@
 package hexinator;
 
+import java.awt.Font;
 import java.io.UnsupportedEncodingException;
 
 import javax.swing.JTextPane;
@@ -12,6 +13,12 @@ public class PanelText extends JTextPane implements SettingsListener {
 	public PanelText() {
 		AbstractDocument doc = (AbstractDocument)this.getDocument();
 		doc.setDocumentFilter(new TextFilter());
+		initGUI();
+	}
+	
+	private void initGUI() {
+		this.setText("");
+		this.setFont(new Font("Courier New", Font.PLAIN, 14));
 	}
 	
 	public byte[] getBytes() {

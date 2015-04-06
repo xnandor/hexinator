@@ -20,7 +20,7 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 	private int characterWidth = 0;
 	private int charactersPerLine = 0;
 	private String octetDelimiter = " ";
-	private String addressDelimiter = " | ";
+	private String addressDelimiter = "|  ";
 	private int bytesPerLine = 16;
 	private byte[] bytes;
 
@@ -30,8 +30,10 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 	}
 	
 	private void initGUI() {
-		this.setEditable(false);
+		this.setEditable(true);
 		this.addHierarchyBoundsListener(this);
+		this.setFont(new Font("Courier New", Font.PLAIN, 14));
+		this.setText("0x00");
 	}
 		
 	private void refreshCharactersPerLine() {
@@ -46,11 +48,18 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 		long address = 0L;
 		StringBuilder sb = new StringBuilder();
 		bytes = source.getBytes();
+		int length = bytes.length;
+		int addressSize = (int) (Math.log((length-1==0)?length:length-1) / Math.log(16.0));  //log_16(N) = I
+		addressSize++;
+		if (addressSize%2==1) {
+			addressSize++;
+		}
+		System.out.println("Bytes:"+bytes.length+"   size:"+addressSize);
 		for (byte b : bytes) {
 			if ((address % bytesPerLine) == 0) {
 				sb.append("\n0x");
 				String addressString = String.format("%H", address);
-				for (int i = bytesPerLine - addressString.length(); i > 0; i--) {
+				for (int i = addressSize - addressString.length(); i > 0; i--) {
 					sb.append("0");
 				}
 				sb.append(addressString);
@@ -96,8 +105,10 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 
 	@Override
 	public void ancestorResized(HierarchyEvent e) {
-		refreshCharactersPerLine();
-		refreshText();
+		if (e.getChanged().getClass() != javax.swing.JViewport.class) {
+			refreshCharactersPerLine();
+			refreshText();
+		}
 	}
 	
 	@Override
