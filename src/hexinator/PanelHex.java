@@ -20,7 +20,7 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 	private int characterWidth = 0;
 	private int charactersPerLine = 0;
 	private String octetDelimiter = " ";
-	private String addressDelimiter = "|  ";
+	private String addressDelimiter = ": ";
 	private int bytesPerLine = 16;
 	private byte[] bytes;
 
@@ -30,7 +30,7 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 	}
 	
 	private void initGUI() {
-		this.setEditable(true);
+		this.setEditable(false);
 		this.addHierarchyBoundsListener(this);
 		this.setFont(new Font("Courier New", Font.PLAIN, 14));
 		this.setText("0x00");
@@ -54,7 +54,6 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 		if (addressSize%2==1) {
 			addressSize++;
 		}
-		System.out.println("Bytes:"+bytes.length+"   size:"+addressSize);
 		for (byte b : bytes) {
 			if ((address % bytesPerLine) == 0) {
 				sb.append("\n0x");

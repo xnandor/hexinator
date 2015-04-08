@@ -40,8 +40,21 @@ public class Settings {
 			return displayName;
 		}
 	}
+	
+	public enum HexMode {
+		HEX("Hex"),
+		BINARY("Binary");
+		public final String displayName;
+		private HexMode(String displayName) {
+			this.displayName = displayName;
+		}
+		public String toString() {
+			return displayName;
+		}
+	}
 	private static final Encoding[] encodings;
-	private static final EntryMode[] modes;	
+	private static final EntryMode[] entryModes;	
+	private static final HexMode[] hexModes;		
 	private static Encoding encoding = Encoding.UTF8;
 	private static EntryMode mode = EntryMode.TEXT;
 	private static ArrayList<SettingsListener> listeners = new ArrayList<SettingsListener>();
@@ -60,8 +73,14 @@ public class Settings {
 		for (EntryMode mode : EntryMode.values()) {
 			b.add(mode);
 		}
-		modes = b.toArray(new EntryMode[0]);
-
+		entryModes = b.toArray(new EntryMode[0]);
+		
+		ArrayList<HexMode> c = new ArrayList<HexMode>();
+		for (HexMode mode : HexMode.values()) {
+			c.add(mode);
+		}
+		hexModes = c.toArray(new HexMode[0]);
+		
 	}
 	
 	public static void notifyListeners() {
@@ -146,7 +165,11 @@ public class Settings {
 	}
 	
 	public static EntryMode[] getSupportedEntryModes() {
-		return modes;
+		return entryModes;
+	}
+
+	public static HexMode[] getSupportedHexModes() {
+		return hexModes;
 	}
 	
 	public static void loadStaticClass() {
