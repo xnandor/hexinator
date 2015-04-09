@@ -41,7 +41,7 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 		FontMetrics fontMetrics = g.getFontMetrics();
 		characterWidth = fontMetrics.stringWidth("A");
 		int width = this.getWidth();
-		charactersPerLine = width/characterWidth;
+		charactersPerLine = (characterWidth>0)?width/characterWidth:0;
 	}
 	
 	public void refreshText() {
@@ -90,9 +90,10 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 			this.setFont(new Font(font.getName(), font.getStyle(), size+1));
 			refreshCharactersPerLine();
 		}
-		while (numCharsOnFirstLine > charactersPerLine) {
+		int size = this.getFont().getSize();
+		while (numCharsOnFirstLine > charactersPerLine && size > 2) {
 			Font font = this.getFont();
-			int size = font.getSize();
+			size = font.getSize();
 			this.setFont(new Font(font.getName(), font.getStyle(), size-1));
 			refreshCharactersPerLine();
 		}
@@ -126,16 +127,19 @@ public class PanelHex extends JTextPane implements DocumentListener, HierarchyBo
 	}
 
 	private void changed(DocumentEvent e) {
+		refreshCharactersPerLine();
 		refreshText();
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		refreshCharactersPerLine();
 		refreshText();
 	}
 
 	@Override
 	public void settingsChanged() {
+		refreshCharactersPerLine();
 		refreshText();
 	}	
 }
