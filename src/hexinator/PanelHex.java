@@ -198,7 +198,6 @@ public class PanelHex extends JTextArea implements DocumentListener, HierarchyBo
 			if (e.getOffset() >= text.length()-1) {
 				append = true;
 			}
-			long i = System.currentTimeMillis();
 			if (append) {
 				for (byte b : changedBytes) {
 					bytes.add(b);
@@ -214,8 +213,6 @@ public class PanelHex extends JTextArea implements DocumentListener, HierarchyBo
 				refreshAllText();
 				autoResizeFont();
 			}
-			long f = System.currentTimeMillis();
-			System.out.println("Time to add:" + (f-i));
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
