@@ -11,6 +11,7 @@ import java.awt.HeadlessException;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 /**
  * @author ericalanbischoff
@@ -76,7 +77,11 @@ public class Hexinator extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Hexinator();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new Hexinator();		
+			}
+		});
 	}
 
 }
