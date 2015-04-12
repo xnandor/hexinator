@@ -71,6 +71,7 @@ public class Hexinator extends JFrame {
 	private void finalizeGUI() {
 		this.pack();
 		this.setVisible(true);
+		textPanel.requestFocus();
 	}
 	
 	/**
